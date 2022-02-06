@@ -18,7 +18,7 @@ def main():
     list_of_anime_characters = [img for img in list_of_images if "https://cdn.myanimelist.net/r" in str(img)]
 
     for img_html in list_of_anime_characters:
-        name = img_html['alt'].split(",")
+        name = img_html['alt'].split(", ")
         img_link = img_html['data-srcset'].split()[2]
 
         character = {
@@ -33,8 +33,8 @@ def main():
 
 
 def update_json(data):
-    with open("anime_characters.json", "w") as f:
-        json.dump(data, f, indent=4)
+    with open("anime_characters.json", "w") as file:
+        json.dump(data, file, indent=4)
 
 
 if __name__ == '__main__':
