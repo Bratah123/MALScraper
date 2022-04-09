@@ -9,7 +9,10 @@ with open("anime_characters.json", "r") as f:
 
 def main():
     page_num = int(input("How many pages would you like to scrape? "))
+    print(f"Estimated {page_num * 4} seconds until completion.")
     for n in range(page_num):
+        print(f"Scraping page {n}...")
+        time.sleep(4)
         web_page_num = (n - 1) * 50
         url = f'https://myanimelist.net/character.php?limit={web_page_num}'  # limit=0 indicates first page
         web_client = urlopen(url)
