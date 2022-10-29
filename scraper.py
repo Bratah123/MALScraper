@@ -10,7 +10,7 @@ with open("anime_characters.json", "r") as f:
 def main():
     page_num = int(input("How many pages would you like to scrape? "))
     print(f"Estimated {page_num * 4} seconds until completion.")
-    for n in range(page_num):
+    for n in range(1 , page_num+1):
         print(f"Scraping page {n}...")
         time.sleep(4)
         web_page_num = (n - 1) * 50
@@ -18,17 +18,22 @@ def main():
         web_client = urlopen(url)
         page_html = web_client.read()
         page_soup = bs4.BeautifulSoup(page_html, "html.parser")
-        list_of_images = page_soup.findAll('img')
+        list_of_ranks = page_soup.findAll("tr", class_="ranking-list")
         # Remove all the img tags that don't have anime characters
-        list_of_anime_characters = [img for img in list_of_images if "https://cdn.myanimelist.net/r" in str(img)]
 
-        for img_html in list_of_anime_characters:
+        for rank in list_of_ranks:
+            img_html = rank.find('img') # Information about the characters, name and image are stored here
+            title_html = rank.find('div', class_='title').find('a') # Information about where the character came from is here
+
             name = img_html['alt'].split(", ")
+            anime_from = title_html.contents[0] # What anime the character came from.
+
             img_link = img_html['data-srcset'].split()[2]
 
             character = {
                 "name": name,
-                "img": img_link
+                "img": img_link,
+                "anime": anime_from,
             }
 
             characters.append(character)
