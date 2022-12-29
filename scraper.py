@@ -19,21 +19,29 @@ def main():
         page_html = web_client.read()
         page_soup = bs4.BeautifulSoup(page_html, "html.parser")
         list_of_ranks = page_soup.findAll("tr", class_="ranking-list")
-        # Remove all the img tags that don't have anime characters
 
         for rank in list_of_ranks:
             img_html = rank.find('img') # Information about the characters, name and image are stored here
             title_html = rank.find('div', class_='title').find('a') # Information about where the character came from is here
+            animes_from = len(rank.find('td', class_='animeography').findChildren('a'))
+            mangas_from = len(rank.find('td', class_='mangaography').findChildren('a'))
+            favorite_html = rank.find('td', class_='favorites')
 
             name = img_html['alt'].split(", ")
             anime_from = title_html.contents[0] # What anime the character came from.
-
             img_link = img_html['data-srcset'].split()[2]
+            favorites = favorite_html.contents[0]
+            # clean up the favorites content to be int suitable
+            # remove all \n commas and spaces.
+            test = favorites.replace(" ", "").replace("\n", "").replace(",", "")
 
             character = {
                 "name": name,
                 "img": img_link,
                 "anime": anime_from,
+                "animes_from": animes_from, # max is 3 cause thats all that's displayed
+                "mangas_from": mangas_from,
+                "favorites": int(test),
             }
 
             characters.append(character)
